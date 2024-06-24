@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stream_gold_rate/src/features/gold/data/fake_gold_api.dart';
-// Import your API service
 
 class GoldScreen extends StatelessWidget {
   const GoldScreen({super.key});
@@ -21,22 +20,36 @@ class GoldScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 20),
               StreamBuilder<double>(
-                stream: getGoldPriceStream(), // Your fake Gold API stream
+                stream: getGoldPriceStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
-                    return Text(
-                      'Error: ${snapshot.error}',
-                      style: TextStyle(color: Colors.red),
-                    );
+                    return Text('Error: ${snapshot.error}',
+                        style: TextStyle(color: Colors.red));
                   } else if (snapshot.hasData) {
-                    return Text(
-                      NumberFormat.simpleCurrency(locale: 'de_DE').format(snapshot.data),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineLarge!
-                          .copyWith(color: Theme.of(context).colorScheme.primary),
+                    double goldPrice = snapshot.data!;
+                    return Column(
+                      children: [
+                        Text(
+                          NumberFormat.simpleCurrency(locale: 'de_DE').format(goldPrice),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge!
+                              .copyWith(color: Theme.of(context).colorScheme.primary),
+                        ),
+                        SizedBox(height: 20), // Add some space
+                        Center( // Center the text
+                          child: Text(
+                            'This is a fake price, but gold is very good!',
+                            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     );
                   } else {
                     return Text('No data available');
